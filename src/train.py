@@ -5,6 +5,7 @@ for bank consumer churn prediction.
 
 import pandas as pd
 import pickle
+import joblib
 import matplotlib.pyplot as plt
 from sklearn.utils import resample
 from sklearn.model_selection import train_test_split
@@ -168,6 +169,7 @@ def main():
         log_reg = LogisticRegression(max_iter=1000)
 
         model = train(X_train, y_train , log_reg)
+        joblib.dump(model, "models/LR_model.pkl")
 
         
         y_pred = model.predict(X_test)
@@ -211,7 +213,8 @@ def main():
 
         model = train(X_train, y_train , svm_model)
 
-        
+        joblib.dump(model, "models/SVM_model.pkl")
+
         y_pred = model.predict(X_test)
 
         ### Log metrics after calculating them
@@ -253,6 +256,7 @@ def main():
 
         model = train(X_train, y_train , random_for)
 
+        joblib.dump(model, "models/RF_model.pkl")
         
         y_pred = model.predict(X_test)
 
@@ -297,6 +301,8 @@ def main():
 
         
         y_pred = model.predict(X_test)
+
+        joblib.dump(model, "models/GBOOST_model.pkl")
 
         ### Log metrics after calculating them
         mlflow.log_metric("accuracy", accuracy_score(y_test, y_pred))
