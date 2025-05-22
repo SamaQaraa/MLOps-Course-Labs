@@ -3,6 +3,7 @@ import joblib
 import pickle
 import pandas as pd
 from pydantic import BaseModel , Field
+from prometheus_fastapi_instrumentator import Instrumentator
 import logging
 
 # Logging
@@ -29,6 +30,8 @@ class InputData(BaseModel):
 
 
 app = FastAPI()
+instrumentator = Instrumentator().instrument(app).expose(app)
+
 
 @app.get("/")
 def home():
