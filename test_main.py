@@ -12,7 +12,7 @@ def test_home():
 def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "OK"}
 
 def test_prediction():
     sample_input = {
