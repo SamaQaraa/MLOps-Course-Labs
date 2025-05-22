@@ -11,6 +11,7 @@ env:
   AWS_ACCOUNT_ID: "060795916912"  
   ECR_REPOSITORY: churn-prediction
   IMAGE_TAG: sama-997
+  PROJECT_NAME: sama-project
 
 jobs:
   test-and-deploy:
@@ -101,19 +102,23 @@ jobs:
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
           
           # Update docker-compose.yml to use ECR image
-          if [ -f docker-compose.yml ]; then
+           if [ -f docker-compose.yml ]; then
             # Replace 'build: .' with the ECR image
             sed -i "s|build: \.|image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" docker-compose.yml
             # Also handle if there's already an image line for fastapi service
             sed -i "/fastapi:/,/ports:/ s|image: .*|image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|" docker-compose.yml
           fi
           
-          # Stop existing containers
-          docker-compose down || true
+          # Stop only YOUR containers using unique project name
+          if [ -f docker-compose.yml ]; then
+            docker-compose -p ${{ env.PROJECT_NAME }} down
+          else
+            echo "No docker-compose.yml found, skipping container stop"
+          fi
           
-          # Pull the latest image and start containers
-          docker-compose pull
-          docker-compose up -d
+          # Pull the latest image and start containers with unique project name
+          docker-compose -p ${{ env.PROJECT_NAME }} pull
+          docker-compose -p ${{ env.PROJECT_NAME }} up -d
           
-          # Show running containers
-          docker ps
+          # Show running containers for your project only
+          docker-compose -p ${{ env.PROJECT_NAME }} ps
