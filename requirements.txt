@@ -4,7 +4,7 @@ pandas
 scikit-learn
 joblib
 pydantic
-pyteset
+pytest
 requests
 requests-dotenv
 numpy
