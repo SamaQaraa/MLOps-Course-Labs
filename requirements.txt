@@ -4,4 +4,9 @@ pandas
 scikit-learn
 joblib
 pydantic
+pyteset
+requests
+requests-dotenv
+numpy
+pytest-cov
 prometheus-fastapi-instrumentator
