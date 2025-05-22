@@ -9,4 +9,5 @@ requests
 requests-dotenv
 numpy
 pytest-cov
+httpx
 prometheus-fastapi-instrumentator
